@@ -1,0 +1,2 @@
+include pylintrc
+include README.md

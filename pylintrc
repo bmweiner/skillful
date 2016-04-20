@@ -1,0 +1,18 @@
+[REPORTS]
+
+# Set the output format. Available formats are text, parseable, colorized, msvs
+# (visual studio) and html. You can also give a reporter class, eg
+# mypackage.mymodule.MyReporterClass.
+output-format = colorized
+
+
+[BASIC]
+
+# Good variable names which should always be accepted, separated by a comma
+good-names = i, j, k, x, y, X, db, df
+
+
+[MISCELLANEOUS]
+
+# List of note tags to take in consideration, separated by a comma.
+notes = FIXME, TODO
