@@ -2,6 +2,11 @@ language: python
 python:
   - '2.7'
   - '3.5'
+addons:
+  apt_packages:
+    - pandoc
+install:
+  - pip install pypandoc 
 script: python setup.py nosetests 
 deploy:
   provider: pypi
