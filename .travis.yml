@@ -6,7 +6,8 @@ addons:
   apt_packages:
     - pandoc
 install:
-  - pip install pypandoc 
+  - pip install pypandoc
+  - python setup.py develop
 script: python setup.py nosetests 
 deploy:
   provider: pypi
