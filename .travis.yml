@@ -12,3 +12,4 @@ deploy:
     tags: true
     distributions: sdist bdist_wheel
     repo: bmweiner/skillful
+    condition: $TRAVIS_PYTHON_VERSION = '2.7'
