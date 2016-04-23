@@ -1,15 +1,18 @@
 # skillful
 
+[![pypi_version](https://img.shields.io/pypi/v/skillful.svg?maxAge=2592000)](https://pypi.python.org/pypi/skillful)
+[![pypi_downloads](https://img.shields.io/pypi/dm/skillful.svg?maxAge=2592000)](https://pypi.python.org/pypi/skillful)
+[![Build Status](https://travis-ci.org/bmweiner/skillful.svg?branch=master)](https://travis-ci.org/bmweiner/skillful)
+[![coverage](https://coveralls.io/repos/github/bmweiner/skillful/badge.svg?branch=master)](https://coveralls.io/github/bmweiner/skillful?branch=master)
+
 *A Python package for building Amazon Alexa skills.*
 
 ## Features
 
-* Implements request and response objects compliant with the [JSON Interface
-  Reference for Custom Skills](https://goo.gl/JpVGm4), version 1.0
-* Function decorators for registering function logic to be performed when
-  specific request types are received
-* Automatic request processing which handles parsing, validation, dispatch,
-  and response
+* Request and response objects for [custom skills](https://goo.gl/JpVGm4)
+* Simple definition of response logic for each request type
+* Built-in request parsing/validation, intent dispatch, and response
+  construction
 
 ## Installation
 
