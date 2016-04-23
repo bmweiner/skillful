@@ -6,9 +6,12 @@ addons:
   apt_packages:
     - pandoc
 install:
+  - pip install coveralls
   - pip install pypandoc
   - pip install -r requirements.txt
 script: python setup.py nosetests 
+after_success:
+  coveralls
 deploy:
   provider: pypi
   user: bmweiner
@@ -19,3 +22,4 @@ deploy:
     distributions: sdist bdist_wheel
     repo: bmweiner/skillful
     condition: $TRAVIS_PYTHON_VERSION = '2.7'
+
