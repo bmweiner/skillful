@@ -32,4 +32,4 @@ setup(name='skillful',
                 'skillful.tests',],
       install_requires=['six',],
       test_suite='nose.collector',
-      tests_require=['nose'])
+      tests_require=['nose', 'coverage'])
