@@ -1,8 +1,8 @@
 # skillful
 
-[![PyPI Version](https://img.shields.io/pypi/v/skillful.svg)](https://pypi.python.org/pypi/skillful)
-[![PyPI Downloads](https://img.shields.io/pypi/dm/skillful.svg)](https://pypi.python.org/pypi/skillful)
-[![Build Status](https://travis-ci.org/bmweiner/skillful.svg?branch=master)](https://travis-ci.org/bmweiner/skillful)
+[![PyPIVersion](https://img.shields.io/pypi/v/skillful.svg)](https://pypi.python.org/pypi/skillful)
+[![PyPIDownloads](https://img.shields.io/pypi/dm/skillful.svg)](https://pypi.python.org/pypi/skillful)
+[![BuildStatus](https://travis-ci.org/bmweiner/skillful.svg?branch=master)](https://travis-ci.org/bmweiner/skillful)
 [![Coverage](https://coveralls.io/repos/github/bmweiner/skillful/badge.svg?branch=master)](https://coveralls.io/github/bmweiner/skillful?branch=master)
 
 *A Python package for building Amazon Alexa skills.*
