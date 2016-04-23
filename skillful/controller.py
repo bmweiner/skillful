@@ -120,17 +120,6 @@ class Skill(object):
         req_id = self.request.session.application.application_id
         return self.application_id == req_id
 
-    def get_error_response(self, msg='Unknown'):
-        """Returns an internal server error message.
-
-        Args:
-            msg: str, default is Unknown. Error message.
-
-        Returns:
-            str: JSON formatted error message.
-        """
-        return """{{"InternalServerError":"{}"}}""".format(msg)
-
     def process(self, body):
         """Process request body given skill logic.
 
@@ -149,9 +138,8 @@ class Skill(object):
 
         self.request.parse(body)
 
-        if self.application_id:
-            if not self.valid_request():
-                return self.get_error_response('invalid application_id')
+        if self.application_id and not self.valid_request():
+            return error_response('invalid application_id')
 
         self.pass_attributes()
 
@@ -161,3 +149,14 @@ class Skill(object):
             self.terminate()
 
         return self.response.to_json()
+
+def error_response(msg='Unknown'):
+    """Returns an internal server error message.
+
+    Args:
+        msg: str, default is Unknown. Error message.
+
+    Returns:
+        str: JSON formatted error message.
+    """
+    return """{{"InternalServerError":"{}"}}""".format(msg)
