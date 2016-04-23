@@ -8,7 +8,8 @@ try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError):
-    long_description = open('README.md').read()
+    with open('README.md') as file:
+        long_description = file.read()
 
 setup(name='skillful',
       version=__version__,
