@@ -1,8 +1,11 @@
+import sys
 from setuptools import setup
 
 from skillful import __version__
 from skillful import __doc__ as description
 
+needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
+pytest_runner = ['pytest-runner'] if needs_pytest else []
 
 try:
     import pypandoc
@@ -30,7 +33,8 @@ setup(name='skillful',
       platforms=['py27', 'py35'],
       license='MIT License',
       packages=['skillful',
-                'skillful.tests',],
-      install_requires=['six',],
-      test_suite='nose.collector',
-      tests_require=['nose', 'coverage'])
+                'skillful.tests'],
+      install_requires=['six'],
+      setup_requires=[] + pytest_runner,
+      tests_require=['pytest'])
+
