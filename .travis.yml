@@ -6,10 +6,8 @@ addons:
   apt_packages:
     - pandoc
 install:
-  - pip install coveralls
-  - pip install pypandoc
-  - pip install -r requirements.txt
-script: python setup.py nosetests 
+  - pip install -r travis-requirements.txt
+script: py.test --cov 
 after_success:
   coveralls
 deploy:
@@ -22,4 +20,3 @@ deploy:
     distributions: sdist bdist_wheel
     repo: bmweiner/skillful
     condition: $TRAVIS_PYTHON_VERSION = '2.7'
-
