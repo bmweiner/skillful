@@ -134,7 +134,7 @@ class RequestBody(Body):
 
         # session ended request
         elif request['type'] == 'SessionEndedRequest':
-            self.request = SessionEndRequest()
+            self.request = SessionEndedRequest()
             self.request.reason = request['reason']
 
         # common - keep after specific requests to prevent param overwrite
@@ -276,7 +276,7 @@ class Slot(BodyChild):
         self.value = value
         self._set_default_attr(default_attr)
 
-class SessionEndRequest(Request):
+class SessionEndedRequest(Request):
     """Request context associated with a session ended request.
 
     See Request base class for additional info.
@@ -286,8 +286,8 @@ class SessionEndRequest(Request):
             ['USER_INITIATED', 'ERROR', 'EXCEEDED_MAX_REPROMPTS']
     """
     def __init__(self, reason=None):
-        """Inits a SessionEndRequest class with placeholder params."""
-        super(SessionEndRequest, self).__init__()
+        """Inits a SessionEndedRequest class with placeholder params."""
+        super(SessionEndedRequest, self).__init__()
         default_attr = dict(reason=str())
         self.reason = reason
         self._set_default_attr(default_attr)
