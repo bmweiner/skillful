@@ -6,7 +6,7 @@ addons:
   apt_packages:
     - pandoc
 install:
-  - pip install -r travis-requirements.txt
+  - pip install -r requirements-dev.txt
 script: py.test --cov 
 after_success:
   coveralls
