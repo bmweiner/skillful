@@ -29,21 +29,21 @@
     def on_launch():
         print('Launched: {}'.format(skill.request.session.session_id))
         text = 'Welcome to skillful. Would you like to build an Alexa skill?'
-        skill.response.set_output_speech_plain_text(text)
+        skill.response.set_speech_text(text)
         ssml = ('<speak>Please tell me if you would like to build an Alexa '
                 'skill.</speak>')
-        skill.response.set_reprompt_output_speech_ssml(ssml)
+        skill.response.set_reprompt_ssml(ssml)
 
     @skill.intent('yes')
     def on_intent_yes():
         text = ('Great! Building Alexa skills is easy with skillful. Open '
                 'the Alexa app to see more information on skillful, a '
                 'Python package for building Alexa skills.')
-        skill.response.set_output_speech_plain_text(text)
+        skill.response.set_speech_text(text)
         title = 'skillful'
         content = ('A Python package for building Alexa skills.\n\n'
                    'Visit: https://github.com/bmweiner/skillful')
-        skill.response.set_card_type_simple(title, content)
+        skill.response.set_card_simple(title, content)
         skill.terminate()
 
     @skill.intent('no')
@@ -51,11 +51,11 @@
         text = ('Well, if you change your mind, open the Alexa app to see '
                 'more information on skillful, a Python package for '
                 'building Alexa skills.')
-        skill.response.set_output_speech_plain_text(text)
+        skill.response.set_speech_text(text)
         title = 'skillful'
         content = ('A Python package for building Alexa skills.\n\n'
                    'Visit: https://github.com/bmweiner/skillful')
-        skill.response.set_card_type_simple(title, content)
+        skill.response.set_card_simple(title, content)
         skill.terminate()
 
     @skill.session_ended
