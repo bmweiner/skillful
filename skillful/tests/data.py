@@ -41,7 +41,7 @@ SAMPLE_INTENT_REQUEST = """{
   },
   "request": {
     "type": "IntentRequest",
-    "requestId": " amzn1.echo-api.request.0000000-0000-0000-0000-00000000000",
+    "requestId": "amzn1.echo-api.request.0000000-0000-0000-0000-00000000000",
     "timestamp": "2015-05-13T12:34:56Z",
     "intent": {
       "name": "yes",
