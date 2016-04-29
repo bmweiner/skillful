@@ -4,6 +4,7 @@ from __future__ import absolute_import, division, print_function
 import json
 import six
 
+
 class DefaultAttrMixin(object):
     """Sets default attributes"""
     def _set_default_attr(self, default_attr):
@@ -51,7 +52,32 @@ class Body(DefaultAttrMixin):
         Return:
             dict: object params.
         """
-        return _to_dict(self, drop_null, camel)
+        #return _to_dict(self, drop_null, camel)
+        def to_dict(obj, drop_null, camel):
+            """Recursively constructs the dict."""
+            if isinstance(obj, (Body, BodyChild)):
+                obj = obj.__dict__
+            if isinstance(obj, dict):
+                data = {}
+                for attr, val in six.iteritems(obj):
+                    if camel:
+                        attr = _snake_to_camel(attr)
+                    valid_null = (isinstance(val, bool) or val == 0 or
+                                  (val and to_dict(val, drop_null, camel)))
+                    if not drop_null or (drop_null and valid_null):
+                        data[attr] = to_dict(val, drop_null, camel)
+                return data
+            elif isinstance(obj, list):
+                data = []
+                for val in obj:
+                    valid_null = (isinstance(val, bool) or val == 0 or
+                                  (val and to_dict(val, drop_null, camel)))
+                    if not drop_null or (drop_null and valid_null):
+                        data.append(to_dict(val, drop_null, camel))
+                return data
+            else:
+                return obj
+        return to_dict(self, drop_null, camel)
 
 class BodyChild(DefaultAttrMixin):
     """Base HTTP Body child class"""
@@ -337,7 +363,7 @@ class ResponseBody(Body):
         """
         return self.session_attributes.get(key, None)
 
-    def set_output_speech_plain_text(self, text):
+    def set_speech_text(self, text):
         """Set response output speech as plain text type.
 
         Args:
@@ -347,7 +373,7 @@ class ResponseBody(Body):
         self.response.output_speech.type = 'PlainText'
         self.response.output_speech.text = text
 
-    def set_output_speech_ssml(self, ssml):
+    def set_speech_ssml(self, ssml):
         """Set response output speech as SSML type.
 
         Args:
@@ -358,7 +384,7 @@ class ResponseBody(Body):
         self.response.output_speech.type = 'SSML'
         self.response.output_speech.ssml = ssml
 
-    def set_card_type_simple(self, title, content):
+    def set_card_simple(self, title, content):
         """Set response card as simple type.
 
         title and content cannot exceed 8,000 characters.
@@ -371,8 +397,8 @@ class ResponseBody(Body):
         self.response.card.title = title
         self.response.card.content = content
 
-    def set_card_type_standard(self, title, text, small_image_url=None,
-                               large_image_url=None):
+    def set_card_standard(self, title, text, small_image_url=None,
+                          large_image_url=None):
         """Set response card as standard type.
 
         title, text, and image cannot exceed 8,000 characters.
@@ -388,18 +414,16 @@ class ResponseBody(Body):
         self.response.card.type = 'Standard'
         self.response.card.title = title
         self.response.card.text = text
-        if not small_image_url and large_image_url:
-            delattr(self.response.card, 'image')
         if small_image_url:
             self.response.card.image.small_image_url = small_image_url
         if large_image_url:
             self.response.card.image.large_image_url = large_image_url
 
-    def set_card_type_link_account(self):
+    def set_card_link(self):
         """Set response card as link account type."""
         self.response.card.type = 'LinkAccount'
 
-    def set_reprompt_output_speech_plain_text(self, text):
+    def set_reprompt_text(self, text):
         """Set response reprompt output speech as plain text type.
 
         Args:
@@ -409,7 +433,7 @@ class ResponseBody(Body):
         self.response.reprompt.output_speech.type = 'PlainText'
         self.response.reprompt.output_speech.text = text
 
-    def set_reprompt_output_speech_ssml(self, ssml):
+    def set_reprompt_ssml(self, ssml):
         """Set response reprompt output speech as SSML type.
 
         Args:
@@ -420,7 +444,7 @@ class ResponseBody(Body):
         self.response.reprompt.output_speech.type = 'SSML'
         self.response.reprompt.output_speech.ssml = ssml
 
-    def set_should_end_session(self, end):
+    def set_end_session(self, end):
         """Set response should end session
 
         Args:
@@ -528,45 +552,16 @@ class Reprompt(BodyChild):
         self.output_speech = output_speech
         self._set_default_attr(default_attr)
 
-def _to_dict(obj, drop_null=True, camel=True):
-    """Serialize obj as dict.
+def error_response(msg='Unknown'):
+    """Returns an internal server error message.
 
     Args:
-        obj: obj. Object to serialize.
-        drop_null: bool, default True. Remove 'empty' attributes.
-        camel: bool, default True. Convert keys to camelCase.
+        msg: str, default is Unknown. Error message.
 
-    Return:
-        dict: obj serialized as dict.
+    Returns:
+        str: JSON formatted error message.
     """
-    if isinstance(obj, (Body, BodyChild)):
-        obj = obj.__dict__
-    if isinstance(obj, dict):
-        data = {}
-        for attr, val in six.iteritems(obj):
-            if drop_null:
-                cond = (isinstance(val, bool) or val == 0
-                        or (val and _to_dict(val, drop_null, camel)))
-            else:
-                cond = True
-            if cond:
-                if camel:
-                    attr = _snake_to_camel(attr)
-                data[attr] = _to_dict(val, drop_null, camel)
-        return data
-    elif isinstance(obj, list):
-        data = []
-        for val in obj:
-            if drop_null:
-                cond = (isinstance(val, bool) or val == 0
-                        or (val and _to_dict(val, drop_null, camel)))
-            else:
-                cond = True
-            if cond:
-                data.append(_to_dict(val, drop_null, camel))
-        return data
-    else:
-        return obj
+    return """{{"InternalServerError":"{}"}}""".format(msg)
 
 def _snake_to_camel(name, strict=False):
     """Converts parameter names from snake_case to camelCase.
