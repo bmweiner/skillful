@@ -6,6 +6,7 @@ import six
 
 from .interface import RequestBody
 from .interface import ResponseBody
+from .interface import error_response
 
 
 class Skill(object):
@@ -78,22 +79,14 @@ class Skill(object):
             return wrapper
         return decorator
 
-    def set_attribute(self, key, value):
-        """Convenience function to call response.set_session_attribute."""
-        self.response.set_session_attribute(key, value)
-
-    def get_attribute(self, key):
-        """Convenience function to call response.get_session_attribute."""
-        return self.response.get_session_attribute(key)
-
-    def pass_attributes(self):
+    def pass_session_attributes(self):
         """Copies request attributes to response"""
         for key, value in six.iteritems(self.request.session.attributes):
             self.response.session_attributes[key] = value
 
     def terminate(self):
-        """Convenience function to call response.set_should_end_session True."""
-        self.response.set_should_end_session(True)
+        """Convenience function to call response.set_end_session True."""
+        self.response.set_end_session(True)
 
     def dispatch(self):
         """Calls the matching logic function by request type or intent name."""
@@ -141,7 +134,7 @@ class Skill(object):
         if self.application_id and not self.valid_request():
             return error_response('invalid application_id')
 
-        self.pass_attributes()
+        self.pass_session_attributes()
 
         self.dispatch()
 
@@ -149,14 +142,3 @@ class Skill(object):
             self.terminate()
 
         return self.response.to_json()
-
-def error_response(msg='Unknown'):
-    """Returns an internal server error message.
-
-    Args:
-        msg: str, default is Unknown. Error message.
-
-    Returns:
-        str: JSON formatted error message.
-    """
-    return """{{"InternalServerError":"{}"}}""".format(msg)
