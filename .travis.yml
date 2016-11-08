@@ -1,22 +1,21 @@
 language: python
 python:
-  - '2.7'
-  - '3.5'
+- '2.7'
+- '3.5'
 addons:
   apt_packages:
-    - pandoc
+  - pandoc
 install:
-  - pip install -r requirements-dev.txt
-script: py.test --cov 
-after_success:
-  coveralls
+- pip install -r requirements-dev.txt
+script: py.test --cov
+after_success: coveralls
 deploy:
   provider: pypi
   user: bmweiner
   password:
-    secure: KxALjD1DTZeNFwrlXGpcFKbyjQaedxi49mFEaEuz6fwHNCDHDCjNMTVOAsJ9q05zjIX4srVgOlRg8J0UClZ+gq0DuB3r01z0ktc2+BM8+yVQxDPhzIF/gKp/4q5ETRHs2u0vFqDMA2HcpwFoU2v9WlFfN1MBbkb6Xgrm7KNyQ0IcKpBe4uxC+FbT8ufLYvEuTTHjjrN6/rQicjNiwH2DALYOJv6SNGOGBRO2B8Ih7EsE9XjTiVOpd9aRCV7blxtyPJA5IOt36i+kwXje3ApDjPFMn2NjlDSOe19stwAXdcbglDkXfsXEAKfxNCPPdEOOO0XMpcTpn4VpIwkXkCUAKYI5fInWf/tPh85yJA+4YUC4sGAa8h4yo8tR3myrLDSVhk5sxldwiykpg+PH3Lp49lm4mSFkvt2W8U8lJo+hrcwKDft+MQhMAcjZ7VTggEpb6O3ktfaUOgev1G2ZyAafQCN3bHyypOZCK1DKxh6b9NCbdXg0pIY5Hv/deDdYswL9jZqF9bEI23Rem8Ii6VbKmPaRtSotVLu7VPlZep0bGzKpCdie7KkfqHgDSUV5C7eCjDCtdY0Ah0DDvcbIIFx3P5yaXnsnKSwXMhDMmE8qBsBpT4iH2vY5yaEUob5OUfTaNcLyYd40DOvK76WVKC+UjPhcwypCrf6n+mxKhVI1B/g=
+    secure: NxQW24lU8FdbsFrkmbf8kM0PhjjfQcCrbhf/mJ/EKBDl5H2bLXdn1LaI7m+0m1Oyq1uU6oepAfnxtVEp58xDFW99W3x00vNQCgY/46X1rR4EfmIwZ69W/ZDbY/3seyQKd3K7boqKcXBl0TfbCg6oHSJxCY2JYxpD/Ccn8C/QRRZ2h7CXcFBoAtn+5VwSW+wNLdgia//yvuSiDcvj9TsVA8ryZ0gV1JrCaEzL0qk6h/YnVu86Zh/3oPlaPU7OdW0SQ6kBD+iIp01KVEP+K7GVZLi4ZlL9HJe1jV9DH1wwSvaTxGMK3mwUXvqqYh8xIc7Jwn93QT7EfZaUx0P6hRjlRNX8XTj2CLt2qlQC9BRt4EIoi8ZALjcTaRs8qKrkGQl5tFrbaWdp6TAUGsJ0nTt6t3EQdTlk/3Rh5ySIHiZ5yg1dwoBku2pjah/1m9/HiNsR/WVKmG4XZ+F1EbM+I54a2Y6oz+LF+oTJv2ikeXbN2TcL+6kRivQbDIzkMSd2wEk0dOH01rVbAHSW5NXO32Xllsi+cwZJO0YvyD6EkmFp3fTX4VZf4HmZwzLIZs96vac/iU/MZsR9TtsjaIJnA0I/wu9zFeDn5foWk+a/rc14iL53OotMnFSJez6OLEjRGz1sjRqQX09+kLikYH+kdGrOILd8LAvjhcG6J7nVKpefm3w=
   on:
     tags: true
     distributions: sdist bdist_wheel
     repo: bmweiner/skillful
-    condition: $TRAVIS_PYTHON_VERSION = '2.7'
+    condition: "$TRAVIS_PYTHON_VERSION = '2.7'"
