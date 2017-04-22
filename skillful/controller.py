@@ -82,7 +82,7 @@ class Skill(object):
     def pass_session_attributes(self):
         """Copies request attributes to response"""
         for key, value in six.iteritems(self.request.session.attributes):
-            self.response.session_attributes[key] = value
+            self.response.sessionAttributes[key] = value
 
     def terminate(self):
         """Convenience function to call response.set_end_session True."""

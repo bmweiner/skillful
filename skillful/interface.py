@@ -26,7 +26,7 @@ class Body(DefaultAttrMixin):
     def __len__(self):
         return len(self.__dict__)
 
-    def to_json(self, drop_null=True, camel=True, indent=None, sort_keys=False):
+    def to_json(self, drop_null=True, camel=False, indent=None, sort_keys=False):
         """Serialize self as JSON
 
         Args:
@@ -42,7 +42,7 @@ class Body(DefaultAttrMixin):
         return json.dumps(self.to_dict(drop_null, camel), indent=indent,
                           sort_keys=sort_keys)
 
-    def to_dict(self, drop_null=True, camel=True):
+    def to_dict(self, drop_null=True, camel=False):
         """Serialize self as dict.
 
         Args:
@@ -153,10 +153,10 @@ class RequestBody(Body):
             intent = request['intent']
             self.request.intent.name = intent['name']
             if 'slots' in intent and intent['slots']:
-                for slot_name, slot in six.iteritems(intent['slots']):
-                    self.request.intent.slots[slot_name] = Slot()
-                    self.request.intent.slots[slot_name].name = slot['name']
-                    self.request.intent.slots[slot_name].value = slot['value']
+                for name, slot in six.iteritems(intent['slots']):
+                    self.request.intent.slots[name] = Slot()
+                    self.request.intent.slots[name].name = slot['name']
+                    self.request.intent.slots[name].value = slot.get('value')
 
         # session ended request
         elif request['type'] == 'SessionEndedRequest':
@@ -329,17 +329,17 @@ class ResponseBody(Body):
 
     Attributes:
         version: str, default '1.0'. Version specifier for the response.
-        session_attributes: dict. Key-value pairs for attribute name-value.
+        sessionAttributes: dict. Key-value pairs for attribute name-value.
         response: obj. Context association with the response, see Response
             class.
     """
-    def __init__(self, version=None, session_attributes=None, response=None):
+    def __init__(self, version=None, sessionAttributes=None, response=None):
         """Inits a ResponseBody class with placeholder params."""
         default_attr = dict(version='1.0',
-                            session_attributes=dict(),
+                            sessionAttributes=dict(),
                             response=Response())
         self.version = version
-        self.session_attributes = session_attributes
+        self.sessionAttributes = sessionAttributes
         self.response = response
         self._set_default_attr(default_attr)
 
@@ -350,7 +350,7 @@ class ResponseBody(Body):
             key: str. Attribute name.
             value: object. Attribute value.
         """
-        self.session_attributes[key] = value
+        self.sessionAttributes[key] = value
 
     def get_session_attribute(self, key):
         """Get session attribute.
@@ -361,7 +361,7 @@ class ResponseBody(Body):
         Returns:
             value: object.
         """
-        return self.session_attributes.get(key, None)
+        return self.sessionAttributes.get(key, None)
 
     def set_speech_text(self, text):
         """Set response output speech as plain text type.
@@ -370,8 +370,8 @@ class ResponseBody(Body):
             text: str. Response speech used when type is 'PlainText'. Cannot exceed
                 8,000 characters.
         """
-        self.response.output_speech.type = 'PlainText'
-        self.response.output_speech.text = text
+        self.response.outputSpeech.type = 'PlainText'
+        self.response.outputSpeech.text = text
 
     def set_speech_ssml(self, ssml):
         """Set response output speech as SSML type.
@@ -381,8 +381,8 @@ class ResponseBody(Body):
                 with Speech Synthesis Markup Language. Cannot exceed 8,000
                 characters.
         """
-        self.response.output_speech.type = 'SSML'
-        self.response.output_speech.ssml = ssml
+        self.response.outputSpeech.type = 'SSML'
+        self.response.outputSpeech.ssml = ssml
 
     def set_card_simple(self, title, content):
         """Set response card as simple type.
@@ -397,8 +397,8 @@ class ResponseBody(Body):
         self.response.card.title = title
         self.response.card.content = content
 
-    def set_card_standard(self, title, text, small_image_url=None,
-                          large_image_url=None):
+    def set_card_standard(self, title, text, smallImageUrl=None,
+                          largeImageUrl=None):
         """Set response card as standard type.
 
         title, text, and image cannot exceed 8,000 characters.
@@ -406,18 +406,18 @@ class ResponseBody(Body):
         Args:
             title: str. Title of Simple or Standard type card.
             text: str. Content of Standard type card.
-            small_image_url: str. URL of small image. Cannot exceed 2,000
+            smallImageUrl: str. URL of small image. Cannot exceed 2,000
                 characters. Recommended pixel size: 720w x 480h.
-            large_image_url: str. URL of large image. Cannot exceed 2,000
+            largeImageUrl: str. URL of large image. Cannot exceed 2,000
                 characters. Recommended pixel size: 1200w x 800h.
         """
         self.response.card.type = 'Standard'
         self.response.card.title = title
         self.response.card.text = text
-        if small_image_url:
-            self.response.card.image.small_image_url = small_image_url
-        if large_image_url:
-            self.response.card.image.large_image_url = large_image_url
+        if smallImageUrl:
+            self.response.card.image.smallImageUrl = smallImageUrl
+        if largeImageUrl:
+            self.response.card.image.largeImageUrl = largeImageUrl
 
     def set_card_link(self):
         """Set response card as link account type."""
@@ -430,8 +430,8 @@ class ResponseBody(Body):
             text: str. Response speech used when type is 'PlainText'. Cannot
                 exceed 8,000 characters.
         """
-        self.response.reprompt.output_speech.type = 'PlainText'
-        self.response.reprompt.output_speech.text = text
+        self.response.reprompt.outputSpeech.type = 'PlainText'
+        self.response.reprompt.outputSpeech.text = text
 
     def set_reprompt_ssml(self, ssml):
         """Set response reprompt output speech as SSML type.
@@ -441,37 +441,37 @@ class ResponseBody(Body):
                 with Speech Synthesis Markup Language. Cannot exceed 8,000
                 characters.
         """
-        self.response.reprompt.output_speech.type = 'SSML'
-        self.response.reprompt.output_speech.ssml = ssml
+        self.response.reprompt.outputSpeech.type = 'SSML'
+        self.response.reprompt.outputSpeech.ssml = ssml
 
     def set_end_session(self, end):
         """Set response should end session
 
         Args:
-            should_end_session: bool. If True, end the session.
+            shouldEndSession: bool. If True, end the session.
         """
-        self.response.should_end_session = end
+        self.response.shouldEndSession = end
 
 class Response(BodyChild):
     """Response context associated with all responses.
 
     Attributes:
-        output_speech: obj. Context associated with the output speech.
+        outputSpeech: obj. Context associated with the output speech.
         card: obj. Context associated with the card.
         reprompt: obj. Context associated with a reprompt.
-        should_end_session: bool. If True, end the session.
+        shouldEndSession: bool. If True, end the session.
     """
-    def __init__(self, output_speech=None, card=None, reprompt=None,
-                 should_end_session=None):
+    def __init__(self, outputSpeech=None, card=None, reprompt=None,
+                 shouldEndSession=None):
         """Inits a Response class with placeholder params."""
-        default_attr = dict(output_speech=OutputSpeech(),
+        default_attr = dict(outputSpeech=OutputSpeech(),
                             card=Card(),
                             reprompt=Reprompt(),
-                            should_end_session=False)
-        self.output_speech = output_speech
+                            shouldEndSession=False)
+        self.outputSpeech = outputSpeech
         self.card = card
         self.reprompt = reprompt
-        self.should_end_session = should_end_session
+        self.shouldEndSession = shouldEndSession
         self._set_default_attr(default_attr)
 
 class OutputSpeech(BodyChild):
@@ -527,29 +527,29 @@ class Image(BodyChild):
     """Response context associated with a card image.
 
     Attributes:
-        small_image_url: str. URL of small image. Cannot exceed 2,000
+        smallImageUrl: str. URL of small image. Cannot exceed 2,000
             characters. Recommended pixel size: 720w x 480h.
-        large_image_url: str. URL of large image. Cannot exceed 2,000
+        largeImageUrl: str. URL of large image. Cannot exceed 2,000
             characters. Recommended pixel size: 1200w x 800h.
     """
-    def __init__(self, small_image_url=None, large_image_url=None):
+    def __init__(self, smallImageUrl=None, largeImageUrl=None):
         """Inits an Image class with placeholder params."""
-        default_attr = dict(small_image_url=str(),
-                            large_image_url=str())
-        self.small_image_url = small_image_url
-        self.large_image_url = large_image_url
+        default_attr = dict(smallImageUrl=str(),
+                            largeImageUrl=str())
+        self.smallImageUrl = smallImageUrl
+        self.largeImageUrl = largeImageUrl
         self._set_default_attr(default_attr)
 
 class Reprompt(BodyChild):
     """Response context associated with a reprompt.
 
     Attributes:
-        output_speech: obj. Context associated with the output speech.
+        outputSpeech: obj. Context associated with the output speech.
     """
-    def __init__(self, output_speech=None):
+    def __init__(self, outputSpeech=None):
         """Inits a Reprompt class with placeholder params."""
-        default_attr = dict(output_speech=OutputSpeech())
-        self.output_speech = output_speech
+        default_attr = dict(outputSpeech=OutputSpeech())
+        self.outputSpeech = outputSpeech
         self._set_default_attr(default_attr)
 
 def error_response(msg='Unknown'):
