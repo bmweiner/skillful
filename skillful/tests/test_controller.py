@@ -47,46 +47,46 @@ class TestSkill(unittest.TestCase):
         """Test pass_attributes method."""
         self.skill.request.session.attributes = {'name': 'skill', 'age': 10}
         self.skill.pass_session_attributes()
-        actual = self.skill.response.session_attributes
+        actual = self.skill.response.sessionAttributes
         self.assertEqual(actual['name'], 'skill')
         self.assertEqual(actual['age'], 10)
 
     def test_terminate(self):
         """Test terminate method."""
         self.skill.terminate()
-        self.assertTrue(self.skill.response.response.should_end_session)
+        self.assertTrue(self.skill.response.response.shouldEndSession)
 
     def test_dispatch_launch(self):
         """Test dispath method for launch."""
         @self.skill.launch
         def sample_func():
             """Decorated function."""
-            self.skill.response.session_attributes['run'] = True
+            self.skill.response.sessionAttributes['run'] = True
         self.skill.request.request.type = 'LaunchRequest'
         self.skill.dispatch()
-        self.assertTrue(self.skill.response.session_attributes['run'])
+        self.assertTrue(self.skill.response.sessionAttributes['run'])
 
     def test_dispatch_intent(self):
         """Test dispath method for intent."""
         @self.skill.intent('test_intent')
         def sample_func():
             """Decorated function."""
-            self.skill.response.session_attributes['run'] = True
+            self.skill.response.sessionAttributes['run'] = True
         self.skill.request.request.type = 'IntentRequest'
         self.skill.request.request.intent = interface.Intent()
         self.skill.request.request.intent.name = 'test_intent'
         self.skill.dispatch()
-        self.assertTrue(self.skill.response.session_attributes['run'])
+        self.assertTrue(self.skill.response.sessionAttributes['run'])
 
     def test_dispatch_session_end(self):
         """Test dispath method for session_end."""
         @self.skill.session_ended
         def sample_func():
             """Decorated function."""
-            self.skill.response.session_attributes['run'] = True
+            self.skill.response.sessionAttributes['run'] = True
         self.skill.request.request.type = 'SessionEndedRequest'
         self.skill.dispatch()
-        self.assertTrue(self.skill.response.session_attributes['run'])
+        self.assertTrue(self.skill.response.sessionAttributes['run'])
 
     def test_dispatch_missing(self):
         """Test dispath method for missing."""

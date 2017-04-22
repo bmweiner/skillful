@@ -49,17 +49,17 @@ class TestBody(unittest.TestCase):
     def test_to_json(self):
         """Test to_json method."""
         expected = '{"paramA": "a", "paramB": [1]}'
-        self.assertEqual(self.body.to_json(sort_keys=True), expected)
+        self.assertEqual(self.body.to_json(True, True, None, True), expected)
 
     def test_to_dict(self):
         """Test to_dict method."""
-        actual = self.body.to_dict()
+        actual = self.body.to_dict(True, True)
         self.assertEqual(actual['paramA'], 'a')
         self.assertEqual(len(actual['paramB']), 1)
 
     def test_to_dict_no_drop(self):
         """Test to_dict method for no drop."""
-        actual = self.body.to_dict(False)
+        actual = self.body.to_dict(False, True)
         self.assertEqual(actual['paramA'], 'a')
         self.assertEqual(len(actual['paramB']), 3)
         self.assertIsNone(actual['paramB'][2]['a'])
@@ -297,20 +297,20 @@ class TestResponseBody(unittest.TestCase):
     def test___init__(self):
         """Test __init__ method."""
         self.assertEqual(self.response_body.version, '1.0')
-        self.assertIsInstance(self.response_body.session_attributes, dict)
+        self.assertIsInstance(self.response_body.sessionAttributes, dict)
         self.assertIsInstance(self.response_body.response, interface.Response)
 
     def test_set_session_attribute(self):
         """Test set_session_attribute method."""
         val = ['1', '2', '3']
         self.response_body.set_session_attribute('my_list', val)
-        actual = self.response_body.session_attributes['my_list']
+        actual = self.response_body.sessionAttributes['my_list']
         self.assertEqual(actual, val)
 
     def test_get_session_attribute(self):
         """Test get_session_attribute method."""
         val = (True, False)
-        self.response_body.session_attributes['my_tuple'] = val
+        self.response_body.sessionAttributes['my_tuple'] = val
         actual = self.response_body.get_session_attribute('my_tuple')
         self.assertEqual(actual, val)
 
@@ -318,16 +318,16 @@ class TestResponseBody(unittest.TestCase):
         """Test set_speech_text method."""
         text = ('Alexa say this.')
         self.response_body.set_speech_text(text)
-        actual = self.response_body.response.output_speech.type
+        actual = self.response_body.response.outputSpeech.type
         self.assertEqual(actual, 'PlainText')
-        self.assertEqual(self.response_body.response.output_speech.text, text)
+        self.assertEqual(self.response_body.response.outputSpeech.text, text)
 
     def test_set_speech_ssml(self):
         """Test set_speech_ssml method."""
         ssml = ('<speak>Alexa say that.</speak>')
         self.response_body.set_speech_ssml(ssml)
-        self.assertEqual(self.response_body.response.output_speech.type, 'SSML')
-        self.assertEqual(self.response_body.response.output_speech.ssml, ssml)
+        self.assertEqual(self.response_body.response.outputSpeech.type, 'SSML')
+        self.assertEqual(self.response_body.response.outputSpeech.ssml, ssml)
 
     def test_set_card_simple(self):
         """Test set_card_simple method."""
@@ -351,41 +351,41 @@ class TestResponseBody(unittest.TestCase):
         """Test set_card_standard method for small image."""
         title = 'Standard card title.'
         text = 'Standard card text'
-        small_image_url = 'https://github.com/bmweiner/skillful/simg.png'
-        self.response_body.set_card_standard(title, text, small_image_url)
+        smallImageUrl = 'https://github.com/bmweiner/skillful/simg.png'
+        self.response_body.set_card_standard(title, text, smallImageUrl)
         self.assertEqual(self.response_body.response.card.type, 'Standard')
         self.assertEqual(self.response_body.response.card.title, title)
         self.assertEqual(self.response_body.response.card.text, text)
-        actual = self.response_body.response.card.image.small_image_url
-        self.assertEqual(actual, small_image_url)
+        actual = self.response_body.response.card.image.smallImageUrl
+        self.assertEqual(actual, smallImageUrl)
 
     def test_set_card_standard_limg(self):
         """Test set_card_standard method for large image."""
         title = 'Standard card title.'
         text = 'Standard card text'
-        large_image_url = 'https://github.com/bmweiner/skillful/limg.png'
-        self.response_body.set_card_standard(title, text, None, large_image_url)
+        largeImageUrl = 'https://github.com/bmweiner/skillful/limg.png'
+        self.response_body.set_card_standard(title, text, None, largeImageUrl)
         self.assertEqual(self.response_body.response.card.type, 'Standard')
         self.assertEqual(self.response_body.response.card.title, title)
         self.assertEqual(self.response_body.response.card.text, text)
-        actual = self.response_body.response.card.image.large_image_url
-        self.assertEqual(actual, large_image_url)
+        actual = self.response_body.response.card.image.largeImageUrl
+        self.assertEqual(actual, largeImageUrl)
 
     def test_set_card_standard_img(self):
         """Test set_card_standard method for both images."""
         title = 'Standard card title.'
         text = 'Standard card text'
-        small_image_url = 'https://github.com/bmweiner/skillful/simg.png'
-        large_image_url = 'https://github.com/bmweiner/skillful/limg.png'
-        self.response_body.set_card_standard(title, text, small_image_url,
-                                             large_image_url)
+        smallImageUrl = 'https://github.com/bmweiner/skillful/simg.png'
+        largeImageUrl = 'https://github.com/bmweiner/skillful/limg.png'
+        self.response_body.set_card_standard(title, text, smallImageUrl,
+                                             largeImageUrl)
         self.assertEqual(self.response_body.response.card.type, 'Standard')
         self.assertEqual(self.response_body.response.card.title, title)
         self.assertEqual(self.response_body.response.card.text, text)
-        actual = self.response_body.response.card.image.small_image_url
-        self.assertEqual(actual, small_image_url)
-        actual = self.response_body.response.card.image.large_image_url
-        self.assertEqual(actual, large_image_url)
+        actual = self.response_body.response.card.image.smallImageUrl
+        self.assertEqual(actual, smallImageUrl)
+        actual = self.response_body.response.card.image.largeImageUrl
+        self.assertEqual(actual, largeImageUrl)
 
     def test_set_card_link(self):
         """Test set_card_link method."""
@@ -396,29 +396,29 @@ class TestResponseBody(unittest.TestCase):
         """Test set_reprompt_text method."""
         text = ('Alexa say this.')
         self.response_body.set_reprompt_text(text)
-        actual = self.response_body.response.reprompt.output_speech.type
+        actual = self.response_body.response.reprompt.outputSpeech.type
         self.assertEqual(actual, 'PlainText')
-        actual = self.response_body.response.reprompt.output_speech.text
+        actual = self.response_body.response.reprompt.outputSpeech.text
         self.assertEqual(actual, text)
 
     def test_set_reprompt_ssml(self):
         """Test set_reprompt_ssml method."""
         ssml = ('<speak>Alexa say that.</speak>')
         self.response_body.set_reprompt_ssml(ssml)
-        actual = self.response_body.response.reprompt.output_speech.type
+        actual = self.response_body.response.reprompt.outputSpeech.type
         self.assertEqual(actual, 'SSML')
-        actual = self.response_body.response.reprompt.output_speech.ssml
+        actual = self.response_body.response.reprompt.outputSpeech.ssml
         self.assertEqual(actual, ssml)
 
     def test_end_session_true(self):
         """Test end_session method for true."""
         self.response_body.set_end_session(True)
-        self.assertTrue(self.response_body.response.should_end_session)
+        self.assertTrue(self.response_body.response.shouldEndSession)
 
     def test_end_session_false(self):
         """Test end_session method for false."""
         self.response_body.set_end_session(False)
-        self.assertFalse(self.response_body.response.should_end_session)
+        self.assertFalse(self.response_body.response.shouldEndSession)
 
 class TestResponse(unittest.TestCase):
     """Test Response class."""
@@ -428,23 +428,23 @@ class TestResponse(unittest.TestCase):
 
     def test___init__(self):
         """Test __init__ method."""
-        actual = self.response.output_speech
+        actual = self.response.outputSpeech
         self.assertIsInstance(actual, interface.OutputSpeech)
         self.assertIsInstance(self.response.card, interface.Card)
         self.assertIsInstance(self.response.reprompt, interface.Reprompt)
-        self.assertFalse(self.response.should_end_session)
+        self.assertFalse(self.response.shouldEndSession)
 
 class TestOutputSpeech(unittest.TestCase):
     """Test OutputSpeech class."""
     @classmethod
     def setUpClass(cls):
-        cls.output_speech = interface.OutputSpeech()
+        cls.outputSpeech = interface.OutputSpeech()
 
     def test___init__(self):
         """Test __init__ method."""
-        self.assertIsInstance(self.output_speech.type, str)
-        self.assertIsInstance(self.output_speech.text, str)
-        self.assertIsInstance(self.output_speech.ssml, str)
+        self.assertIsInstance(self.outputSpeech.type, str)
+        self.assertIsInstance(self.outputSpeech.text, str)
+        self.assertIsInstance(self.outputSpeech.ssml, str)
 
 class TestCard(unittest.TestCase):
     """Test Card class."""
@@ -468,8 +468,8 @@ class TestImage(unittest.TestCase):
 
     def test___init__(self):
         """Test __init__ method."""
-        self.assertIsInstance(self.image.small_image_url, str)
-        self.assertIsInstance(self.image.large_image_url, str)
+        self.assertIsInstance(self.image.smallImageUrl, str)
+        self.assertIsInstance(self.image.largeImageUrl, str)
 
 class TestReprompt(unittest.TestCase):
     """Test Reprompt class."""
@@ -479,7 +479,7 @@ class TestReprompt(unittest.TestCase):
 
     def test___init__(self):
         """Test __init__ method."""
-        actual = self.reprompt.output_speech
+        actual = self.reprompt.outputSpeech
         self.assertIsInstance(actual, interface.OutputSpeech)
 
 class TestErrorResponse(unittest.TestCase):
