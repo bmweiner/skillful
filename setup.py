@@ -11,8 +11,11 @@ try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError):
-    with open('README.md') as file:
-        long_description = file.read()
+    try:
+        with open('README.md') as file:
+            long_description = file.read()
+    except(IOError):
+        long_description = 'See github repository.'
 
 setup(name='skillful',
       version=__version__,
@@ -37,4 +40,3 @@ setup(name='skillful',
       install_requires=['six'],
       setup_requires=[] + pytest_runner,
       tests_require=['pytest'])
-
