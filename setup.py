@@ -2,7 +2,7 @@ import sys
 import os
 from setuptools import setup
 
-__version__ = '0.7.1'
+__version__ = '0.8'
 __description__ = 'A Python package for building Alexa skills.'
 
 needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
@@ -34,8 +34,9 @@ setup(name='skillful',
           ],
       platforms=['py27', 'py35'],
       license='MIT License',
-      packages=['skillful',
-                'skillful.tests'],
-      install_requires=['six'],
+      packages=['skillful', 'skillful.tests'],
+      install_requires=['six',
+                        'python-dateutil',
+                        'cryptography'],
       setup_requires=[] + pytest_runner,
       tests_require=['pytest'])

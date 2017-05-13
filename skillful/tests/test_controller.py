@@ -7,6 +7,7 @@
 import unittest
 from skillful import controller
 from skillful import interface
+from skillful import validate
 from skillful.tests import data
 
 
@@ -15,10 +16,11 @@ class TestSkill(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.skill = controller.Skill()
+        cls.skill_app_id = controller.Skill('12345')
 
     def test___init__(self):
         """Test __init__ method."""
-        self.assertIsNone(self.skill.application_id)
+        self.assertIsInstance(self.skill.valid, validate.Valid)
         self.assertIsInstance(self.skill.request, interface.RequestBody)
         self.assertIsInstance(self.skill.response, interface.ResponseBody)
         self.assertIsInstance(self.skill.logic, dict)
@@ -93,17 +95,6 @@ class TestSkill(unittest.TestCase):
         self.skill.logic = {}
         self.assertRaises(KeyError, self.skill.dispatch)
 
-    def test_valid_request_false(self):
-        """Test valid_request method for false."""
-        self.skill.application_id = '12345'
-        self.assertFalse(self.skill.valid_request())
-
-    def test_valid_request_true(self):
-        """Test valid_request method for true."""
-        self.skill.application_id = '12345'
-        self.skill.request.session.application.application_id = '12345'
-        self.assertTrue(self.skill.valid_request())
-
     def test_process(self):
         """Test process method."""
         self.skill.logic = {}
@@ -118,18 +109,16 @@ class TestSkill(unittest.TestCase):
         self.assertRegexpMatches(actual, '"shouldEndSession": false')
         self.assertRegexpMatches(actual, '"ssml": "<speak>Hello.</speak>"')
 
-    def test_process_invalid(self):
-        """Test process method for invalid."""
+    def test_process_invalid1(self):
+        """Test process method for invalid application id."""
         self.skill.logic = {}
-        self.skill.application_id = '12345'
+        self.skill.valid.app_id = '12345'
         @self.skill.launch
         def sample_func():
             """Decorated function."""
             pass
         self.skill.logic['LaunchRequest']()
-        actual = self.skill.process(data.SAMPLE_LAUNCH_REQUEST)
-        expected = """{"InternalServerError":"invalid application_id"}"""
-        self.assertEqual(actual, expected)
+        self.assertFalse(self.skill.process(data.SAMPLE_LAUNCH_REQUEST))
 
     def test_process_end(self):
         """Test process method for invalid."""

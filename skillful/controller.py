@@ -7,6 +7,7 @@ import six
 from .interface import RequestBody
 from .interface import ResponseBody
 from .interface import error_response
+from .validate import Valid
 
 
 class Skill(object):
@@ -18,7 +19,7 @@ class Skill(object):
         - Speech Synthesis Markup Language (SSML) Reference: https://goo.gl/2BHQjz.
 
     Attributes:
-        application_id: str. Skill application ID.
+        valid: skillful.validate.Valid. Request validator.
         request: skillful.Request. Proxy for HTTP request body.
         response: skillful.Response. HTTP response body.
         logic: dict. Containes function logic for processing requests,
@@ -30,14 +31,14 @@ class Skill(object):
         session_ended: obj. Decorator for registering the session ended
             request function. See register() for additional info.
     """
-    def __init__(self, application_id=None):
+    def __init__(self, app_id=None):
         """Inits a Skill class with proxy request and response.
 
         Args:
-            application_id: str, default None. Skill application ID, if set,
-                will attempt to validate during process method.
+            app_id: str, default None. Skill application ID, declare
+                to validate against application ID in the request.
         """
-        self.application_id = application_id
+        self.valid = Valid(app_id)
         self.request = RequestBody()
         self.response = ResponseBody()
         self.logic = dict()
@@ -102,19 +103,10 @@ class Skill(object):
             error = 'Unable to find a registered logic function named: {}'
             raise KeyError(error.format(name))
 
-    def valid_request(self):
-        """Validates application id matches request.
-
-        NOTE: application_id parameter must be set on Skill class init.
-
-        Returns:
-            bool: True if valid request, False otherwise.
-        """
-        req_id = self.request.session.application.application_id
-        return self.application_id == req_id
-
-    def process(self, body):
+    def process(self, body, url=None, sig=None):
         """Process request body given skill logic.
+
+        To validate a request, both, url and sig are required.
 
         Attributes received through body will be automatically added to the
             response.
@@ -122,17 +114,24 @@ class Skill(object):
         Args:
             body: dict. HTTP request body. If str is passed, attempts conversion
                 to dict.
+            url: str. SignatureCertChainUrl header value sent by request.
+                PEM-encoded X.509 certificate chain that Alexa used to sign the
+                message.
+            sig: str. Signature header value sent by request. Base64-encoded
+                signature of the request body.
 
         Return:
-            str: HTTP response body.
+            str or bool: HTTP response body or False if the request is invalid.
         """
         self.request = RequestBody()
         self.response = ResponseBody()
 
         self.request.parse(body)
 
-        if self.application_id and not self.valid_request():
-            return error_response('invalid application_id')
+        app_id = self.request.session.application.application_id
+        stamp = self.request.request.timestamp
+        if not self.valid.request(app_id, body, stamp, url, sig):
+            return False
 
         self.pass_session_attributes()
 
