@@ -157,17 +157,18 @@ class TestSignature(unittest.TestCase):
 
     def test_signature_valid(self):
         """Test valid signature."""
-        data = six.b('text to encrypt')
+        txt = 'text to encrypt'
+        data = six.b(txt)
         signature = self.key.sign(data, padding.PKCS1v15(), hashes.SHA1())
         signature = base64.encodestring(signature)
-        self.assertTrue(validate.signature(self.cert, signature, data))
+        self.assertTrue(validate.signature(self.cert, signature, txt))
 
     def test_signature_invalid(self):
         """Test invalid signature."""
         data = six.b('text to encrypt')
         signature = self.key.sign(data, padding.PKCS1v15(), hashes.SHA1())
         signature = base64.encodestring(signature)
-        self.assertFalse(validate.signature(self.cert, signature, data + 'a'))
+        self.assertFalse(validate.signature(self.cert, signature, 'bad text'))
 
 class TestValid(unittest.TestCase):
     """Test Valid class."""
@@ -232,7 +233,7 @@ class TestValid(unittest.TestCase):
         self.valid.url = None
         self.valid.cert = self.cert
 
-        body = 'text to encrypt'
+        body = six.b('text to encrypt')
         stamp = datetime.datetime.now().isoformat()
         url = "https://s3.amazonaws.com/echo.api/echo-api-cert.pem"
         sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
