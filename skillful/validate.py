@@ -3,6 +3,7 @@
 
 import warnings
 import os
+import sys
 import datetime
 import base64
 from six.moves.urllib_parse import urlparse
@@ -83,6 +84,13 @@ def retrieve(url):
     except (ValueError, HTTPError):
         warnings.warn('Certificate URL is invalid.')
         return False
+
+    if sys.version >= '3':
+        try:
+            pem_data = pem_data.decode()
+        except(UnicodeDecodeError):
+            warnings.warn('Certificate encoding is not utf-8.')
+            return False
 
     return _parse_pem_data(pem_data)
 
