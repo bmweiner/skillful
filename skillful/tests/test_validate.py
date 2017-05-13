@@ -9,6 +9,8 @@ import datetime
 import base64
 import unittest
 
+import six
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography import x509
@@ -155,14 +157,14 @@ class TestSignature(unittest.TestCase):
 
     def test_signature_valid(self):
         """Test valid signature."""
-        data = 'text to encrypt'
+        data = six.b('text to encrypt')
         signature = self.key.sign(data, padding.PKCS1v15(), hashes.SHA1())
         signature = base64.encodestring(signature)
         self.assertTrue(validate.signature(self.cert, signature, data))
 
     def test_signature_invalid(self):
         """Test invalid signature."""
-        data = 'text to encrypt'
+        data = six.b('text to encrypt')
         signature = self.key.sign(data, padding.PKCS1v15(), hashes.SHA1())
         signature = base64.encodestring(signature)
         self.assertFalse(validate.signature(self.cert, signature, data + 'a'))
@@ -191,7 +193,7 @@ class TestValid(unittest.TestCase):
         self.valid.url = 'valid_url'
         self.valid.cert = self.cert
 
-        body = 'text to encrypt'
+        body = six.b('text to encrypt')
         stamp = datetime.datetime.now().isoformat()
         url = 'valid_url'
         sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
@@ -204,7 +206,7 @@ class TestValid(unittest.TestCase):
         self.valid.url = 'valid_url'
         self.valid.cert = self.cert
 
-        body = 'text to encrypt'
+        body = six.b('text to encrypt')
         stamp = 'invalid stamp'
         url = 'valid_url'
         sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
@@ -217,7 +219,7 @@ class TestValid(unittest.TestCase):
         self.valid.url = None
         self.valid.cert = self.cert
 
-        body = 'text to encrypt'
+        body = six.b('text to encrypt')
         stamp = datetime.datetime.now().isoformat()
         url = "invalid_url"
         sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
@@ -243,7 +245,7 @@ class TestValid(unittest.TestCase):
         self.valid.url = None
         self.valid.cert = None
 
-        body = 'text to encrypt'
+        body = six.b('text to encrypt')
         stamp = datetime.datetime.now().isoformat()
         url = 'https://s3.amazonaws.com/echo.api/echo-api-cert-4.pem'
         sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
@@ -252,4 +254,3 @@ class TestValid(unittest.TestCase):
         self.assertFalse(self.valid.sender(body, stamp, url, sig))
         self.assertIsNotNone(self.valid.url)
         self.assertIsNotNone(self.valid.cert)
-        
