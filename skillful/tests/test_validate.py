@@ -194,10 +194,10 @@ class TestValid(unittest.TestCase):
         self.valid.url = 'valid_url'
         self.valid.cert = self.cert
 
-        body = six.b('text to encrypt')
+        body = 'text to encrypt'
         stamp = datetime.datetime.now().isoformat()
         url = 'valid_url'
-        sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
+        sig = self.key.sign(six.b(body), padding.PKCS1v15(), hashes.SHA1())
         sig = base64.encodestring(sig)
 
         self.assertTrue(self.valid.sender(body, stamp, url, sig))
@@ -207,10 +207,10 @@ class TestValid(unittest.TestCase):
         self.valid.url = 'valid_url'
         self.valid.cert = self.cert
 
-        body = six.b('text to encrypt')
+        body = 'text to encrypt'
         stamp = 'invalid stamp'
         url = 'valid_url'
-        sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
+        sig = self.key.sign(six.b(body), padding.PKCS1v15(), hashes.SHA1())
         sig = base64.encodestring(sig)
 
         self.assertFalse(self.valid.sender(body, stamp, url, sig))
@@ -220,10 +220,10 @@ class TestValid(unittest.TestCase):
         self.valid.url = None
         self.valid.cert = self.cert
 
-        body = six.b('text to encrypt')
+        body = 'text to encrypt'
         stamp = datetime.datetime.now().isoformat()
         url = "invalid_url"
-        sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
+        sig = self.key.sign(six.b(body), padding.PKCS1v15(), hashes.SHA1())
         sig = base64.encodestring(sig)
 
         self.assertFalse(self.valid.sender(body, stamp, url, sig))
@@ -233,10 +233,10 @@ class TestValid(unittest.TestCase):
         self.valid.url = None
         self.valid.cert = self.cert
 
-        body = six.b('text to encrypt')
+        body = 'text to encrypt'
         stamp = datetime.datetime.now().isoformat()
         url = "https://s3.amazonaws.com/echo.api/echo-api-cert.pem"
-        sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
+        sig = self.key.sign(six.b(body), padding.PKCS1v15(), hashes.SHA1())
         sig = base64.encodestring(sig)
 
         self.assertFalse(self.valid.sender(body, stamp, url, sig))
@@ -246,10 +246,10 @@ class TestValid(unittest.TestCase):
         self.valid.url = None
         self.valid.cert = None
 
-        body = six.b('text to encrypt')
+        body = 'text to encrypt'
         stamp = datetime.datetime.now().isoformat()
         url = 'https://s3.amazonaws.com/echo.api/echo-api-cert-4.pem'
-        sig = self.key.sign(body, padding.PKCS1v15(), hashes.SHA1())
+        sig = self.key.sign(six.b(body), padding.PKCS1v15(), hashes.SHA1())
         sig = base64.encodestring(sig)
 
         self.assertFalse(self.valid.sender(body, stamp, url, sig))

@@ -2,7 +2,7 @@ import sys
 import os
 from setuptools import setup
 
-__version__ = '0.8'
+__version__ = '0.8.1'
 __description__ = 'A Python package for building Alexa skills.'
 
 needs_pytest = {'pytest', 'test', 'ptr'}.intersection(sys.argv)
