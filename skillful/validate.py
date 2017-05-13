@@ -6,6 +6,7 @@ import os
 import sys
 import datetime
 import base64
+import six
 from six.moves.urllib_parse import urlparse
 from six.moves.urllib.request import urlopen
 from six.moves.urllib_error import HTTPError
@@ -107,7 +108,7 @@ def _parse_pem_data(pem_data):
             url is invalid, returns False.
     """
     sep = '-----BEGIN CERTIFICATE-----'
-    cert_chain = [sep + s for s in pem_data.split(sep)[1:]]
+    cert_chain = [six.b(sep + s) for s in pem_data.split(sep)[1:]]
     certs = []
     load_cert = x509.load_pem_x509_certificate
     for cert in cert_chain:
@@ -171,6 +172,8 @@ def signature(cert, sig, body):
     Returns:
         bool: True if valid, False otherwise.
     """
+    body = six.b(body)
+
     sig = base64.decodestring(sig)
     padder = padding.PKCS1v15()
     public_key = cert.public_key()
