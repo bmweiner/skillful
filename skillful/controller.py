@@ -112,8 +112,7 @@ class Skill(object):
             response.
 
         Args:
-            body: dict. HTTP request body. If str is passed, attempts conversion
-                to dict.
+            body: str. HTTP request body.
             url: str. SignatureCertChainUrl header value sent by request.
                 PEM-encoded X.509 certificate chain that Alexa used to sign the
                 message.

@@ -113,8 +113,7 @@ class RequestBody(Body):
         """Parse JSON request, storing content in object attributes.
 
         Args:
-            body: dict. HTTP request body. If str is passed, parse will attempt
-                conversion to dict.
+            body: str. HTTP request body.
 
         Returns:
             self
